@@ -1,0 +1,52 @@
+WebService-RTMAgent
+
+WebService::RTMAgent implements the low-level API to the
+www.rememberthemilk.com Web service.
+
+This module depends on LWP::UserAgent (should be present on
+all installations), XML::Simple, and Digest::MD5.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc WebService::RTMAgent
+
+You can also look for information at:
+
+    RTMAgent's web site:
+        http://www.rutschle.net/rtm
+
+    RememberTheMilk's web site:
+        http://www.rememberthemilk.com
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=WebService-RTMAgent
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/WebService-RTMAgent
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/WebService-RTMAgent
+
+    Search CPAN
+        http://search.cpan.org/dist/WebService-RTMAgent
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2007 Yves Rutschle
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
