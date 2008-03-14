@@ -89,7 +89,7 @@ package WebService::RTMAgent;
 
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.5';
 
 use LWP::UserAgent;
 use XML::Simple;  # apt-get install libxml-simple-perl

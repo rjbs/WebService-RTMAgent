@@ -10,6 +10,9 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
+        'LWP::UserAgent' => 0,
+        'XML::Simple' => 0,
+        'Digest::MD5' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'WebService-RTMAgent-*' },
