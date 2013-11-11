@@ -22,7 +22,7 @@ WebService::RTMAgent is a Perl implementation of the rememberthemilk.com API.
 
 All API methods documented at L<https://www.rememberthemilk.com/services/api/>
 can be called as methods, changing dots for underscores and optionnaly taking
-off the leading 'rtm': C<< $ua->auth_checkToken >>, C<< $ua->tasks_add >, etc.
+off the leading 'rtm': C<< $ua->auth_checkToken >>, C<< $ua->tasks_add >>, etc.
 
 Parameters should be given as a list of strings, e.g.:
 
@@ -256,8 +256,6 @@ sub clear_undo {
     splice @{$config->{undo}}, $index, 1;
 }
 
-=back
-
 =head1 PRIVATE METHODS
 
 Don't use those and we'll stay friends.
@@ -350,8 +348,6 @@ sub DESTROY {
     open my $f, "> $config_file";
     print $f XMLout($config, NoAttr=>1, RootName=>'RTMAgent');
 }
-
-=back
 
 =head1 FILES
 
