@@ -1,6 +1,7 @@
-=head1 NAME
-
- WebService::RTMAgent - UserAgent for the RememberTheMilk API
+use strict;
+use warnings;
+package WebService::RTMAgent;
+# ABSTRACT: a user agent for the Remember The Milk API
 
 =head1 SYNOPSIS
 
@@ -19,44 +20,45 @@ WebService::RTMAgent is a Perl implementation of the rememberthemilk.com API.
 
 =head2 Calling API methods
 
-All API methods documented at http://www.rememberthemilk.com/services/api/ can
-be called as methods, changing dots for underscores and optionnaly taking off
-the leading 'rtm': $ua->auth_checkToken, $ua->tasks_add, etc.
+All API methods documented at L<http://www.rememberthemilk.com/services/api/>
+can be called as methods, changing dots for underscores and optionnaly taking
+off the leading 'rtm': C<< $ua->auth_checkToken >>, C<< $ua->tasks_add >, etc.
 
 Parameters should be given as a list of strings, e.g.:
 
- $ua->tasks_complete("list_id=4231233", "taskseries_id=124233", "task_id=1234");
+  $ua->tasks_complete(
+    "list_id=4231233",
+    "taskseries_id=124233",
+    "task_id=1234",
+  );
 
 Refer to the API documentation for each method's parameters.
 
-Return values are the XML response, parsed through XML::Simple. Please refer to
-XML::Simple for more information (and Data::Dumper, to see what the values look
-like) and the sample B<rtm> script for examples.
+Return values are the XML response, parsed through L<XML::Simple>. Please refer
+to XML::Simple for more information (and Data::Dumper, to see what the values
+look like) and the sample B<rtm> script for examples.
 
 If the method call was not successful, C<undef> is returned, and an error
 message is set which can be accessed with the B<error> method:
 
- $res = $ua->tasks_getList;
- die $ua->error unless defined $res;
+  $res = $ua->tasks_getList;
+  die $ua->error unless defined $res;
 
 Please note that at this stage, I am not very sure that this is the best way to implement the API. "It works for me," but:
 
-=over 4
-
-=item * Parameters may turn to hashes at some point
-
-=item * Output values may turn to something more abstract and useful, as I gain experience with API usage.
-
-=back
+=for :list
+* Parameters may turn to hashes at some point
+* Output values may turn to something more abstract and useful,
+  as I gain experience with API usage.
 
 =head2 Authentication and authorisation
 
 Before using the API, you need to authenticate it. If you are going to be
 building a desktop application, you should get an API key and shared secret
 from the people at rememberthemilk.com (see
-http://groups.google.com/group/rememberthemilk-api/browse_thread/thread/dcb035f162d4dcc8
-for rationale) and provide them to RTMAgent.pm with the api_key and api_secret
-methods.
+L<http://groups.google.com/group/rememberthemilk-api/browse_thread/thread/dcb035f162d4dcc8>
+for rationale) and provide them to RTMAgent.pm with the C<api_key> and
+C<api_secret> methods.
 
 You then need to proceed through the authentication cycle: create a useragent,
 call the get_auth_url method and direct a Web browser to the URL it returns.
@@ -72,33 +74,25 @@ to do the authentication again.
 The object returned by B<new> is also a LWP::UserAgent. This means you can
 configure it the same way, in particular to cross proxy servers:
 
- $ua = new WebService::RTMAgent;
- $ua->api_key($key);
- $ua->api_secret($secret);
- $ua->proxy('http', 'http://proxy:8080');
- $ua->init;
- $list = $ua->tasks_getList;
+  $ua = new WebService::RTMAgent;
+  $ua->api_key($key);
+  $ua->api_secret($secret);
+  $ua->proxy('http', 'http://proxy:8080');
+  $ua->init;
+  $list = $ua->tasks_getList;
 
-Incidentally, this is the reason why the B<init> method exists: B<init> needs
-to access the network, so its work cannot be done in B<new> as that would leave
-no opportunity to configure the LWP UserAgent.
+Incidentally, this is the reason why the C<init> method exists: C<init> needs
+to access the network, so its work cannot be done in C<new> as that would leave
+no opportunity to configure the LWP::UserAgent.
 
 =cut
 
-package WebService::RTMAgent;
-
-use strict;
-
-our $VERSION = '0.5';
-
-use LWP::UserAgent;
-use XML::Simple;  # apt-get install libxml-simple-perl
-#use Data::Dumper;
-use Digest::MD5 qw(md5_hex);
 use Carp;
-use vars qw/$AUTOLOAD @ISA/;
+use Digest::MD5 qw(md5_hex);
+use LWP::UserAgent;
+use XML::Simple;
 
-our @ISA = qw/LWP::UserAgent/;
+use parent 'LWP::UserAgent';
 
 my $REST_endpoint = "http://www.rememberthemilk.com/services/rest/";
 my $auth_endpoint = "http://www.rememberthemilk.com/services/auth/";
@@ -108,13 +102,12 @@ our $config;  # reference to config hash
 
 =head1 PUBLIC METHODS
 
-=over 4
-
-=item $ua = WebService::RTMAgent->new;
+=head2 $ua = WebService::RTMAgent->new;
 
 Creates a new agent.
 
 =cut
+
 sub new {
     my ($class) = @_;
     my $self = bless {}, $class;
@@ -122,19 +115,19 @@ sub new {
     return $self;
 }
 
-=item $ua->api_key($key);
+=head2 $ua->api_key($key);
 
-=item $ua->api_secret($secret);
+=head2 $ua->api_secret($secret);
 
 Set the API key and secret. These are obtained from the people are
 RememberTheMilk.com.
 
-=item $ua->verbose('netin netout');
+=head2 $ua->verbose('netin netout');
 
 Sets what type of traces the module should print. You can use 'netout' to print
 all the outgoing messages, 'netin' to print all the incoming messages.
 
-=item $err = $ua->error;
+=head2 $err = $ua->error;
 
 Get a message describing the last error that happened.
 
@@ -154,7 +147,7 @@ BEGIN {
     eval $subs;
 }
 
-=item $ua->init;
+=head2 $ua->init;
 
 Performs authentication with RTM and various other book-keeping
 initialisations.
@@ -165,10 +158,11 @@ sub init {
     my ($self) = @_;
 
     if (-e $config_file) {
-        die "$config_file: can't read or write\n" unless -r $config_file and -w $config_file;
+        die "$config_file: can't read or write\n"
+          unless -r $config_file and -w $config_file;
 
         eval {
-            $config = XMLin($config_file, KeyAttr=>'', ForceArray => ['undo']);
+          $config = XMLin($config_file, KeyAttr=>'', ForceArray => ['undo']);
         };
         croak "$config_file: Invalid XML file" if $@ =~ /Document is empty/;
     }
@@ -188,7 +182,8 @@ sub init {
     if ($config->{frob} and not $config->{token}) {
         warn "frobbed -- getting token\n";
         my $res = $self->auth_getToken("frob=$config->{frob}");
-        die $self->error."(Maybe you need to erase $config_file)\n" unless defined $res;
+        die $self->error."(Maybe you need to erase $config_file)\n"
+          unless defined $res;
         $config->{token} = $res->{auth}->[0]->{token}->[0];
         warn "token $config->{token}\n";
     }
@@ -201,7 +196,7 @@ sub init {
     }
 }
 
-=item $ua->get_auth_url;
+=head2 $ua->get_auth_url;
 
 Performs the beginning of the authentication: this returns a URL to which
 the user must then go to allow RTMAgent to access his or her account.
@@ -210,6 +205,7 @@ This mecanism is slightly contrieved and designed so that users do not have
 to give their username and password to third party software (like this one).
 
 =cut
+
 sub get_auth_url {
     my ($self) = @_;
 
@@ -229,7 +225,7 @@ sub get_auth_url {
     return $url;
 }
 
-=item @undo = $ua->get_undoable;
+=head2 @undo = $ua->get_undoable;
 
 Returns the transactions which we know how to undo (unless data has been lost,
 that's all the undo-able transaction that go with the timeline that is saved in
@@ -240,17 +236,19 @@ id, op the API method that was called, and params the API parameters that were
 called.
 
 =cut
+
 sub get_undoable {
     my ($self) = @_;
 
     return $config->{undo};
 }
 
-=item $ua->clear_undo(3);
+=head2 $ua->clear_undo(3);
 
 Removes an undo entry.
 
 =cut
+
 sub clear_undo {
     my ($self, $index) = @_;
 
@@ -263,14 +261,13 @@ sub clear_undo {
 
 Don't use those and we'll stay friends.
 
-=over 4
-
-=item $ua->sign(@params);
+=head2 $ua->sign(@params);
 
 Returns the md5 signature for signing parameters. See RTM Web site for details.
 This should only be useful for the module, don't use it.
 
 =cut
+
 sub sign {
     my ($self, @params) = @_;
 
@@ -280,12 +277,13 @@ sub sign {
     return md5_hex($self->api_secret."$sign_str");
 }
 
-=item $ua->rtm_request("rtm.tasks.getList", "list_id=234", "taskseries_id=2"..)
+=head2 $ua->rtm_request("rtm.tasks.getList", "list_id=234", "taskseries_id=2"..)
 
 Signs the parameters, performs the request, returns a parsed XML::Simple
 object.
 
 =cut
+
 sub rtm_request {
     my ($self, $request, @params) = @_;
 
@@ -313,6 +311,7 @@ sub rtm_request {
 # names to RTM API: tasks_getList => rtm.tasks.getList
 # arguments are as strings:
 # $useragent->tasks_complete("list_id=$a", "taskseries_id=$b" ...);
+our $AUTOLOAD;
 sub AUTOLOAD {
     my $function = $AUTOLOAD;
 
@@ -331,7 +330,7 @@ sub AUTOLOAD {
     }
 
     # If action is undo-able, store transaction ID
-    if (exists $res->{transaction} and 
+    if (exists $res->{transaction} and
         exists $res->{transaction}->[0]->{undoable}) {
         push @{$config->{undo}}, {
                 'id' => $res->{transaction}->[0]->{id},
@@ -355,31 +354,19 @@ sub DESTROY {
 
 =head1 FILES
 
-=over 4
-
-=item F<~/.rtmagent>
-
+=for :list
+= F<~/.rtmagent>
 XML file containing runtime data: frob, timeline, authentication token. This
 file is overwritten on exit, which means you should only have one instance of
 RTMAgent (this should be corrected in a future version).
 
-=back
-
 =head1 SEE ALSO
 
-B<rtm>, example command-line script. LWP. XML::Simple.
-
-http://www.rutschle.net/rtm
-
-=head1 AUTHOR
-
-Written by Yves Rutschle <rtm@rutschle.net>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself.
+=for :list
+* C<< L<rtm|http://www.rutschle.net/rtm> >>, example command-line script.
+* L<LWP::UsrAgent>
+* L<XML::Simple>
 
 =cut
 
-1; # End of RTMAgent.pm
+1;
