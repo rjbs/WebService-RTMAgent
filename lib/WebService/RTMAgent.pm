@@ -161,10 +161,11 @@ sub init {
         die "$config_file: can't read or write\n"
           unless -r $config_file and -w $config_file;
 
-        eval {
+        my $ok = eval {
           $config = XMLin($config_file, KeyAttr=>'', ForceArray => ['undo']);
+          1;
         };
-        croak "$config_file: Invalid XML file" if $@ =~ /Document is empty/;
+        croak "$config_file: Invalid XML file" unless $ok;
     }
 
     # Check Token

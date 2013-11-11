@@ -4,13 +4,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 use WebService::RTMAgent;
 use English;
 
 use File::Copy;
-my $config_file = "/tmp/config";
-copy("t/config",$config_file) or die "Could not copy config file to /tmp\n";
+use File::Spec;
+use File::Temp qw(tempdir);
+
+my $dir = tempdir( CLEANUP => 1 );
+
+my $config_file = File::Spec->catfile($dir, "config");
+copy("t/config",$config_file) or die "Could not copy config file to $dir\n";
 $WebService::RTMAgent::config_file = $config_file;
 
 # check that destroying an un-initialised RTMAgent doesn't
@@ -55,12 +60,14 @@ chmod 0644, $config_file;
 my $fh;
 open $fh, ">$config_file";
 print $fh "hello word\n";
-eval {
+my $ok = eval {
     $ua = new WebService::RTMAgent;
     $ua->init;
+    1;
 };
-ok($@ =~ /Invalid XML file/, "Don't start if config file isn't XML");
 
-
+my $error = $@;
+ok( ! $ok, "Don't start if config file isn't XML");
+like($error, qr/Invalid XML file/, "error message is as expected");
 
 unlink $config_file;
