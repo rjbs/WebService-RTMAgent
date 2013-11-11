@@ -20,7 +20,7 @@ WebService::RTMAgent is a Perl implementation of the rememberthemilk.com API.
 
 =head2 Calling API methods
 
-All API methods documented at L<http://www.rememberthemilk.com/services/api/>
+All API methods documented at L<https://www.rememberthemilk.com/services/api/>
 can be called as methods, changing dots for underscores and optionnaly taking
 off the leading 'rtm': C<< $ua->auth_checkToken >>, C<< $ua->tasks_add >, etc.
 
@@ -56,7 +56,7 @@ Please note that at this stage, I am not very sure that this is the best way to 
 Before using the API, you need to authenticate it. If you are going to be
 building a desktop application, you should get an API key and shared secret
 from the people at rememberthemilk.com (see
-L<http://groups.google.com/group/rememberthemilk-api/browse_thread/thread/dcb035f162d4dcc8>
+L<https://groups.google.com/group/rememberthemilk-api/browse_thread/thread/dcb035f162d4dcc8>
 for rationale) and provide them to RTMAgent.pm with the C<api_key> and
 C<api_secret> methods.
 
@@ -77,7 +77,7 @@ configure it the same way, in particular to cross proxy servers:
   $ua = new WebService::RTMAgent;
   $ua->api_key($key);
   $ua->api_secret($secret);
-  $ua->proxy('http', 'http://proxy:8080');
+  $ua->proxy('http', 'https://proxy:8080');
   $ua->init;
   $list = $ua->tasks_getList;
 
@@ -94,8 +94,8 @@ use XML::Simple;
 
 use parent 'LWP::UserAgent';
 
-my $REST_endpoint = "http://www.rememberthemilk.com/services/rest/";
-my $auth_endpoint = "http://www.rememberthemilk.com/services/auth/";
+my $REST_endpoint = "https://www.rememberthemilk.com/services/rest/";
+my $auth_endpoint = "https://www.rememberthemilk.com/services/auth/";
 
 our $config_file = "$ENV{HOME}/.rtmagent";
 our $config;  # reference to config hash
@@ -364,7 +364,7 @@ RTMAgent (this should be corrected in a future version).
 =head1 SEE ALSO
 
 =for :list
-* C<< L<rtm|http://www.rutschle.net/rtm> >>, example command-line script.
+* C<< L<rtm|https://www.rutschle.net/rtm> >>, example command-line script.
 * L<LWP::UsrAgent>
 * L<XML::Simple>
 
