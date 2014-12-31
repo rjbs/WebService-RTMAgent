@@ -17,7 +17,8 @@ unlink $WebService::RTMAgent::config_file;
 # Instead, we use request.* files that contains the tested
 # requests, and return the expected responses found in
 # response.* files.
-package RTMTestAgent;
+package
+  RTMTestAgent;
 use base 'WebService::RTMAgent';
 use HTTP::Response;
 use HTTP::Status;
