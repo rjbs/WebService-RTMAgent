@@ -1,6 +1,8 @@
 Revision history for WebService-RTMAgent
 
 {{$NEXT}}
+
+0.601     2014-12-31 15:15:03-05:00 America/New_York
         - use api.rememberthemilk.com, not www.rememberthemilk.com (thanks,
           Vince Broz!)
 
