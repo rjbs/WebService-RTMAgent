@@ -9,7 +9,7 @@ use warnings;
 use Test::More tests => 7;
 
 use WebService::RTMAgent;
-my $config_file = "/tmp/config";
+my $config_file = "config.tmp";
 $WebService::RTMAgent::config_file = $config_file;
 unlink $WebService::RTMAgent::config_file;
 
