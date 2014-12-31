@@ -94,8 +94,8 @@ use XML::Simple;
 
 use parent 'LWP::UserAgent';
 
-my $REST_endpoint = "https://www.rememberthemilk.com/services/rest/";
-my $auth_endpoint = "https://www.rememberthemilk.com/services/auth/";
+my $REST_endpoint = "https://api.rememberthemilk.com/services/rest/";
+my $auth_endpoint = "https://api.rememberthemilk.com/services/auth/";
 
 our $config_file = "$ENV{HOME}/.rtmagent";
 our $config;  # reference to config hash
