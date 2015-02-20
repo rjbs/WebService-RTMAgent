@@ -109,10 +109,11 @@ Creates a new agent.
 =cut
 
 sub new {
-    my ($class) = @_;
-    my $self = bless {}, $class;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
+    my $self  = $class->SUPER::new(@_);
     $self->verbose('');
-    return $self;
+    return bless $self, $class;
 }
 
 =head2 $ua->api_key($key);
