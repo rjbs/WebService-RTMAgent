@@ -2,6 +2,10 @@ Revision history for WebService-RTMAgent
 
 {{$NEXT}}
 
+0.602     2015-07-21 21:54:46-04:00 America/New_York
+        - initialize the RTMAgent's parent class, LWP::UA, first
+          (thanks, Ed Santiago)
+
 0.601     2014-12-31 15:15:03-05:00 America/New_York
         - use api.rememberthemilk.com, not www.rememberthemilk.com (thanks,
           Vince Broz!)
