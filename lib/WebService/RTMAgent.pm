@@ -109,8 +109,8 @@ Creates a new agent.
 =cut
 
 sub new {
-    my $proto = shift;
-    my $class = ref($proto) || $proto;
+    my $class = shift;
+    Carp::confess("tried to call ->new on an instance") if ref $class;
     my $self  = $class->SUPER::new(@_);
     $self->verbose('');
     return bless $self, $class;
