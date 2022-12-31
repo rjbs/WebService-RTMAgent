@@ -1,6 +1,8 @@
 Revision history for WebService-RTMAgent
 
 {{$NEXT}}
+        - update packaging and metadata
+        - minimum required Perl is now v5.12
 
 0.602     2015-07-21 21:54:46-04:00 America/New_York
         - initialize the RTMAgent's parent class, LWP::UA, first
