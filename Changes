@@ -1,6 +1,8 @@
 Revision history for WebService-RTMAgent
 
 {{$NEXT}}
+
+0.603     2022-12-31 16:03:05-05:00 America/New_York
         - update packaging and metadata
         - minimum required Perl is now v5.12
 
